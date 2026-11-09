@@ -56,10 +56,10 @@ Las capturas van en `evidencias/` (`hadoop version`, `ssh`, salida del job, resp
 
 | Método | Tiempo | Resultado |
 |---|---|---|
-| Hadoop Streaming (standalone) | _completar_ | _coincide / no_ |
-| Script secuencial Python | _completar_ | _coincide / no_ |
+| Hadoop Streaming (standalone) | 65.724 s | coincide |
+| Script secuencial Python | 18.375 s | coincide |
 
-_Completar con la salida de `comparar.sh`. Párrafo (ajústalo a tus tiempos reales):_ En modo standalone Hadoop corre en un solo nodo y no hay paralelismo real entre máquinas. A eso se suma el arranque de la JVM, el coste de comunicar cada línea por pipes con los procesos Python de Streaming y las fases de ordenamiento y shuffle. Con 400 MB, que caben sin problema en un solo equipo, el script secuencial no paga ese overhead y termina antes. MapReduce conviene cuando los datos son de decenas o cientos de GB y se reparten entre varios nodos.
+`comparar.sh` En modo standalone Hadoop corre en un solo nodo y no hay paralelismo real entre máquinas. A eso se suma el arranque de la JVM, el coste de comunicar cada línea por pipes con los procesos Python de Streaming y las fases de ordenamiento y shuffle. Con 400 MB, que caben sin problema en un solo equipo, el script secuencial no paga ese overhead y termina antes. MapReduce conviene cuando los datos son de decenas o cientos de GB y se reparten entre varios nodos.
 
 ## Parte E. Teoría
 
