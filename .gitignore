@@ -1,0 +1,8 @@
+*.csv
+data/*
+!data/.gitkeep
+.env
+output/
+*.pem
+id_ed25519*
+__pycache__/

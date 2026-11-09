@@ -1,0 +1,55 @@
+services:
+  hadoop:
+    build: ./hadoop
+    container_name: hadoop
+    hostname: hadoop
+    volumes:
+      # Dataset montado como volumen de solo lectura
+      - ./data:/data/input:ro
+      - ./mapreduce:/home/hadoop/mapreduce:ro
+      - ./scripts:/scripts:ro
+      # Salida del job (compartida con la API)
+      - jobout:/data/output
+      # Llaves SSH generadas al arrancar (no viven en el repo)
+      - sshkeys:/keys
+    networks: [datamart]
+
+  db:
+    image: postgres:16
+    container_name: db
+    env_file: .env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks: [datamart]
+
+  api:
+    build: ./api
+    container_name: api
+    env_file: .env
+    environment:
+      DB_HOST: db
+    ports:
+      - "5000:5000"
+    volumes:
+      - sshkeys:/keys:ro
+      - jobout:/data/output:ro
+      - ./scripts:/scripts:ro
+    depends_on:
+      db:
+        condition: service_healthy
+      hadoop:
+        condition: service_started
+    networks: [datamart]
+
+networks:
+  datamart:
+
+volumes:
+  pgdata:
+  sshkeys:
+  jobout:
